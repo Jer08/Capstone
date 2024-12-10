@@ -2,10 +2,10 @@
 const  addCourseForm= document.getElementById("addCourseForm");
 const addCourse = document.getElementById("addCourse");
 const overlay = document.querySelector('#overlay');
-const addSubject=document.getElementById('addSubject');
-const addSubjectForm=document.getElementById("addSubjectForm")
-const addDepartment=document.getElementById('addDepartment');
-const addDepartmentForm=document.getElementById("addDepartmentForm");
+const addUnit=document.getElementById('addUnit');
+const addUnitForm=document.getElementById("addUnitForm")
+const addFaculty=document.getElementById('addFaculty');
+const addFacultyForm=document.getElementById("addFacultyForm");
 
 
 
@@ -16,15 +16,15 @@ addCourse.addEventListener("click", function() {
 
 
 });
-addSubject.addEventListener("click", function() {
-    addSubjectForm.style.display = "block";
+addUnit.addEventListener("click", function() {
+    addUnitForm.style.display = "block";
     overlay.style.display="block";
     document.body.style.overflow = 'hidden'; 
   
   
   });
-  addDepartment.addEventListener("click", function() {
-    addDepartmentForm.style.display = "block";
+  addFaculty.addEventListener("click", function() {
+    addFacultyForm.style.display = "block";
     overlay.style.display="block";
     document.body.style.overflow = 'hidden'; 
   
@@ -32,13 +32,13 @@ addSubject.addEventListener("click", function() {
   });
 
 
-  var closeButtons = document.querySelectorAll('#addCourseForm .close, #addSubjectForm .close, #addDepartmentForm .close');
+  var closeButtons = document.querySelectorAll('#addCourseForm .close, #addUnitForm .close, #addFacultyForm .close');
 
   closeButtons.forEach(function(closeButton) {
       closeButton.addEventListener('click', function() {
           addCourseForm.style.display = "none";
-          addSubjectForm.style.display = "none";
-          addDepartmentForm.style.display="none";
+          addUnitForm.style.display = "none";
+          addFacultyForm.style.display="none";
           overlay.style.display = 'none';
           document.body.style.overflow = 'auto'; 
       });

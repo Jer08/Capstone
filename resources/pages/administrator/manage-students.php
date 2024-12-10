@@ -5,14 +5,12 @@ if (isset($_POST['addStudent'])) {
     $firstName = $_POST['firstName'];
     $lastName = $_POST['lastName'];
     $email = $_POST['email'];
-    $idNumber = $_POST['idNumber'];
+    $registrationNumber = $_POST['studentId'];
     $courseCode = $_POST['course'];
     $dateRegistered = date("Y-m-d");
 
-    $imageFileNames = []; 
-
-   
-    $folderPath = "resources/labels/{$idNumber}/";
+    $imageFileNames = [];
+    $folderPath = "resources/labels/{$studentId}/";
     if (!file_exists($folderPath)) {
         mkdir($folderPath, 0777, true);
     }
@@ -21,7 +19,7 @@ if (isset($_POST['addStudent'])) {
         if (isset($_POST["capturedImage$i"])) {
             $base64Data = explode(',', $_POST["capturedImage$i"])[1];
             $imageData = base64_decode($base64Data);
-            $fileName = "{$idNumber}_image{$i}.png";
+            $fileName = "{$studentId}_image{$i}.png";
             $labelName = "{$i}.png";
             file_put_contents("{$folderPath}{$labelName}", $imageData);
             $imageFileNames[] = $fileName;
@@ -30,32 +28,31 @@ if (isset($_POST['addStudent'])) {
 
     $imagesJson = json_encode($imageFileNames);
 
-
-    $checkQuery = $pdo->prepare("SELECT COUNT(*) FROM tblstudents WHERE idNumber = :idNumber");
-    $checkQuery->execute([':idNumber' => $idNumber]);
+    $checkQuery = $pdo->prepare("SELECT COUNT(*) FROM tblstudents WHERE studentId = :studentId");
+    $checkQuery->execute([':studentId' => $studentId]);
     $count = $checkQuery->fetchColumn();
 
     if ($count > 0) {
-        $_SESSION['message'] = "Student with the given ID No: $idNumber already exists!";
+        $_SESSION['message'] = "Student with the given Student ID No: $studentId already exists!";
     } else {
         $insertQuery = $pdo->prepare("
         INSERT INTO tblstudents 
-        (firstName, lastName, email, idNumber, courseCode, studentImage, dateRegistered) 
+        (firstName, lastName, email, studentId, faculty, courseCode, studentImage, dateRegistered) 
         VALUES 
-        (:firstName, :lastName, :email, :idNumber, :courseCode, :studentImage, :dateRegistered)
+        (:firstName, :lastName, :email, :studentId, :faculty, :courseCode, :studentImage, :dateRegistered)
     ");
 
         $insertQuery->execute([
             ':firstName' => $firstName,
             ':lastName' => $lastName,
             ':email' => $email,
-            ':idNumber' => $idNumber,
+            ':studentId' => $studentId,
             ':courseCode' => $courseCode,
-            ':studentImage' => $imagesJson, 
+            ':studentImage' => $imagesJson,
             ':dateRegistered' => $dateRegistered
         ]);
 
-        $_SESSION['message'] = "Student: $idNumber added successfully!";
+        $_SESSION['message'] = "Student: $studentId added successfully!";
     }
 }
 
@@ -67,7 +64,7 @@ if (isset($_POST['addStudent'])) {
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link href="resources/images/logo/attnlg.png" rel="icon">
+    <link href="resources/images/logo/bpc-logo.png" rel="icon">
     <title>AMS - Dashboard</title>
     <link rel="stylesheet" href="resources/assets/css/admin_styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -95,11 +92,11 @@ if (isset($_POST['addStudent'])) {
                     <table>
                         <thead>
                             <tr>
-                                <th>ID No</th>
+                                <th>Student ID</th>
                                 <th>Name</th>
                                 <th>Course</th>
                                 <th>Email</th>
-                                <th>Settings</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -109,7 +106,7 @@ if (isset($_POST['addStudent'])) {
                             if ($result) {
                                 foreach ($result as $row) {
                                     echo "<tr id='rowstudents{$row["Id"]}'>";
-                                    echo "<td>" . $row["idNumber"] . "</td>";
+                                    echo "<td>" . $row["studentId"] . "</td>";
                                     echo "<td>" . $row["firstName"] . "</td>";
                                     echo "<td>" . $row["courseCode"] . "</td>";
                                     echo "<td>" . $row["email"] . "</td>";
@@ -143,9 +140,8 @@ if (isset($_POST['addStudent'])) {
                             <input type="text" name="firstName" placeholder="First Name">
                             <input type="text" name="lastName" " placeholder=" Last Name">
                             <input type="email" name="email" placeholder="Email Address">
-                            <input type="text" required id="idNumber" name="idNumber" placeholder="ID Number"> <br>
-                            <p id="error" style="color: red; display: none;">Invalid characters in ID number.</p> 
-                            <br/>
+                            <input type="text" required id="studentId" name="studentid" placeholder="Student ID"> <br>
+                            <p id="error" style="color: red; display: none;">Invalid characters in Student ID.</p> 
 
                             <select required name="course">
                                 <option value="" selected>Select Course</option>
@@ -179,13 +175,13 @@ if (isset($_POST['addStudent'])) {
     <?php js_asset(["admin_functions", "delete_request", "script", "active_link"]) ?>
 
     <script>
-        const idNumberInput = document.getElementById('idNumber');
+        const studentIdInput = document.getElementById('studentId');
         const errorMessage = document.getElementById('error');
 
         const invalidCharacters = /[\\/:*?"<>|]/g;
 
-        idNumberInput.addEventListener('input', () => {
-            const originalValue = idNumberInput.value;
+        studentIdInput.addEventListener('input', () => {
+            const originalValue = studentIdInput.value;
 
             const sanitizedValue = originalValue.replace(invalidCharacters, '');
 
@@ -196,7 +192,7 @@ if (isset($_POST['addStudent'])) {
                 errorMessage.style.display = 'none';
             }
 
-            idNumberInput.value = sanitizedValue; 
+            registrationNumberInput.value = sanitizedValue; 
         });
     </script>
 </body>

@@ -1,9 +1,5 @@
 <?php
 
-//handle user login logics 
-
-
-
 $errors = [];
 
 
@@ -16,21 +12,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
         $errors['email'] = 'Invalid email format';
     }
 
-    if (empty($password)) {
+    else if (empty($password)) {
         $errors['password'] = 'Password cannot be empty';
     }
 
-    if (!empty($errors)) {
+    else if (!empty($errors)) {
         $_SESSION['errors'] = $errors;
         exit();
     }
     if ($userType == "administrator") {
         $stmt = $pdo->prepare("SELECT * FROM tbladmin WHERE emailAddress = :email");
-    } elseif ($userType == "instructor") {
-        $stmt = $pdo->prepare("SELECT * FROM tblinstructor WHERE emailAddress = :email");
+    } elseif ($userType == "lecture") {
+        $stmt = $pdo->prepare("SELECT * FROM tbllecture WHERE emailAddress = :email");
     }
     $stmt->execute(['email' => $email]);
     $user = $stmt->fetch();
+
 
     if ($user && $user['password']) {
         $_SESSION['user'] = [
@@ -71,7 +68,7 @@ function display_error($error, $is_main = false)
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Login to access dashboard </title>
+    <title> Login </title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="resources/assets/css/login_styles.css">
 </head>
@@ -89,7 +86,7 @@ function display_error($error, $is_main = false)
 
                 <select name="user_type" id="" required>
                     <option value="">Select User</option>
-                    <option value="instructor">Instructor</option>
+                    <option value="lecture">Instructor</option>
                     <option value="administrator">Admin</option>
                 </select>
             </div>
@@ -103,7 +100,6 @@ function display_error($error, $is_main = false)
             <div class="input-group password">
                 <i class="fas fa-lock"></i>
                 <input type="password" name="password" id="password" placeholder="Password" required>
-                <i id="eye" class="fa fa-eye"></i>
                 <?php
                 display_error('password')
                 ?>

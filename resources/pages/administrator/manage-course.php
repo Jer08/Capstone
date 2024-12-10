@@ -1,4 +1,6 @@
-<?php 
+<?php
+
+
 if (isset($_POST["addCourse"])) {
     $courseName = htmlspecialchars(trim($_POST["courseName"]));
     $courseCode = htmlspecialchars(trim($_POST["courseCode"]));
@@ -12,8 +14,8 @@ if (isset($_POST["addCourse"])) {
         if ($query->rowCount() > 0) {
             $_SESSION['message'] = "Course Already Exists";
         } else {
-            $query = $pdo->prepare("INSERT INTO tblcourse (name, courseCode, dateCreated) 
-                                     VALUES (:name, :courseCode, :dateCreated)");
+            $query = $pdo->prepare("INSERT INTO tblcourse (name, courseCode, dateCreated);
+            VALUES (:name, :courseCode, :dateCreated)");
             $query->bindParam(':name', $courseName);
             $query->bindParam(':courseCode', $courseCode);
             $query->bindParam(':dateCreated', $dateRegistered);
@@ -27,12 +29,12 @@ if (isset($_POST["addCourse"])) {
 }
 
 if (isset($_POST["addSubject"])) {
-    $subjectName = htmlspecialchars(trim($_POST["subjectName"]));
-    $subjectCode = htmlspecialchars(trim($_POST["subjectCode"]));
+    $unitName = htmlspecialchars(trim($_POST["subjectName"]));
+    $unitCode = htmlspecialchars(trim($_POST["subjectCode"]));
     $courseID = filter_var($_POST["course"], FILTER_VALIDATE_INT);
     $dateRegistered = date("Y-m-d");
 
-    if ($subjectName && $subjectCode && $courseID) {
+    if ($subjecttName && $subjectCode && $courseID) {
         $query = $pdo->prepare("SELECT * FROM tblsubject WHERE subjectCode = :subjectCode");
         $query->bindParam(':subjectCode', $subjectCode);
         $query->execute();
@@ -51,7 +53,7 @@ if (isset($_POST["addSubject"])) {
             $_SESSION['message'] = "Subject Inserted Successfully";
         }
     } else {
-        $_SESSION['message'] = "Invalid input for subject";
+        $_SESSION['message'] = "Invalid input for Subject";
     }
 }
 ?>
@@ -63,19 +65,10 @@ if (isset($_POST["addSubject"])) {
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link href="resources/images/logo/attnlg.png" rel="icon">
+    <link href="resources/images/logo/bpc-logo.png" rel="icon">
     <title>Dashboard</title>
     <link rel="stylesheet" href="resources/assets/css/admin_styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.2.0/remixicon.css" rel="stylesheet">
-    <script>
-        function showOverlay(formId) {
-            document.getElementById(formId).style.display = "block";
-        }
-
-        function closeOverlay(formId) {
-            document.getElementById(formId).style.display = "none";
-        }
-    </script>
 </head>
 
 <body>
@@ -99,7 +92,7 @@ if (isset($_POST["addSubject"])) {
                     <div id="addCourse" class="card card-1">
                         <div class="card--data">
                             <div class="card--content">
-                                <button class="add" onclick="showOverlay('addCourseForm')"><i class="ri-add-line"></i>Add Course</button>
+                                <button class="add"><i class="ri-add-line"></i>Add Course</button>
                                 <h1><?php total_rows('tblcourse') ?> Courses</h1>
                             </div>
                             <i class="ri-user-2-line card--icon--lg"></i>
@@ -108,8 +101,8 @@ if (isset($_POST["addSubject"])) {
                     <div class="card card-1" id="addSubject">
                         <div class="card--data">
                             <div class="card--content">
-                                <button class="add" onclick="showOverlay('addSubjectForm')"><i class="ri-add-line"></i>Add Subject</button>
-                                <h1><?php total_rows('tblsubject') ?> Subjects</h1>
+                                <button class="add"><i class="ri-add-line"></i>Add Subjects</button>
+                                <h1><?php total_rows('tblsubject') ?> Subjects </h1>
                             </div>
                             <i class="ri-file-text-line card--icon--lg"></i>
                         </div>
@@ -128,12 +121,12 @@ if (isset($_POST["addSubject"])) {
                         <thead>
                             <tr>
                                 <th>Name</th>
-                                <th>Total Subjects</th>
                                 <th>Total Students</th>
                                 <th>Date Created</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
+
                         <tbody>
                             <?php
                             $sql = "SELECT 
@@ -166,14 +159,13 @@ if (isset($_POST["addSubject"])) {
                         </tbody>
                     </table>
                 </div>
-
             </div>
+
             <div class="table-container">
                 <div class="title">
                     <h2 class="section--title">Subject</h2>
                 </div>
                 </a>
-                
                 <div class="table">
                     <table>
                         <thead>
@@ -201,7 +193,7 @@ if (isset($_POST["addSubject"])) {
                             $result = fetch($sql);
                             if ($result) {
                                 foreach ($result as $row) {
-                                    echo "<tr id='rowsubject{$row["Id"]}' >";
+                                    echo "<tr id='rowunit{$row["Id"]}' >";
                                     echo "<td>" . $row["subject_code"] . "</td>";
                                     echo "<td>" . $row["subject_name"] . "</td>";
                                     echo "<td>" . $row["course_name"] . "</td>";
@@ -218,47 +210,55 @@ if (isset($_POST["addSubject"])) {
                         </tbody>
                     </table>
                 </div>
-
-            <!-- Add Course Form -->
-            <div class="formDiv" id="addCourseForm" style="display:none;">
-                <form method="POST" action="" name="addCourse" enctype="multipart/form-data">
-                    <div style="display:flex; justify-content:space-between;">
-                        <div class="form-title">
-                            <p>Add Course</p>
-                        </div>
-                        <button type="button" class="close" onclick="closeOverlay('addCourseForm')">&times;</button>
-                    </div>
-                    <input type="text" name="courseName" placeholder="Course Name" required>
-                    <input type="text" name="courseCode" placeholder="Course Code" required>
-                    <input type="submit" class="submit" value="Save Course" name="addCourse">
-                </form>
             </div>
 
-            <!-- Add Subject Form -->
-            <div class="formDiv" id="addSubjectForm" style="display:none;">
-                <form method="POST" action="" name="addSubject" enctype="multipart/form-data">
-                    <div style="display:flex; justify-content:space-between;">
-                        <div class="form-title">
-                            <p>Add Subject</p>
-                        </div>
-                        <button type="button" class="close" onclick="closeOverlay('addSubjectForm')">&times;</button>
+        <div class="formDiv" id="addCourseForm" style="display:none; ">
+
+            <form method="POST" action="" name="addCourse" enctype="multipart/form-data">
+                <div style="display:flex; justify-content:space-around;">
+                    <div class="form-title">
+                        <p>Add Course</p>
                     </div>
-                    <input type="text" name="subjectName" placeholder="Subject Name" required>
-                    <input type="text" name="subjectCode" placeholder="Subject Code" required>
-                    <select required name="course">
-                        <option value="" selected>Select Course</option>
-                        <?php
-                        $courseNames = getCourseNames();
-                        foreach ($courseNames as $course) {
-                            echo '<option value="' . $course["Id"] . '">' . $course["name"] . '</option>';
-                        }
-                        ?>
-                    </select>
-                    <input type="submit" class="submit" value="Save Subject" name="addSubject">
-                </form>
-            </div>
+                    <div>
+                        <span class="close">&times;</span>
+                    </div>
+                </div>
+
+                <input type="text" name="courseName" placeholder="Course Name" required>
+                <input type="text" name="courseCode" placeholder="Course Code" required>
+                <input type="submit" class="submit" value="Save Course" name="addCourse">
+            </form>
+        </div>
+
+        <div class="formDiv" id="addSubjectForm" style="display:none; ">
+            <form method="POST" action="" name="addSubject" enctype="multipart/form-data">
+                <div style="display:flex; justify-content:space-around;">
+                    <div class="form-title">
+                        <p>Add Subject</p>
+                    </div>
+                    <div>
+                        <span class="close">&times;</span>
+                    </div>
+                </div>
+
+                <input type="text" name="unitName" placeholder="Subject Name" required>
+                <input type="text" name="unitCode" placeholder="Subject Code" required>
+
+                <select required name="course">
+                    <option value="" selected>Select Course</option>
+                    <?php
+                    $courseNames = getCourseNames();
+                    foreach ($courseNames as $course) {
+                        echo '<option value="' . $course["Id"] . '">' . $course["name"] . '</option>';
+                    }
+                    ?>
+                </select>
+                <input type="submit" class="submit" value="Save Subject" name="addSubject">
+            </form>
         </div>
     </section>
+
+    <?php js_asset(["delete_request", "addCourse", "active_link"]) ?>
 </body>
 
 </html>

@@ -235,7 +235,7 @@ thead{
     padding:3rem;
     overflow-y: scroll;
   }
-  #addInstructorForm{
+  #addLectureForm{
     position:absolute;
     top: 50%;
     left: 50%;
@@ -287,13 +287,13 @@ thead{
      #addStudentForm  input,#addStudentForm select{
         margin-left:10%;
         }
-     #addSubjectForm input,#addSubjectForm select{
+     #addUnitForm input,#addUnitForm select{
         margin-left:10%;
      }
-     #addDepartmentForm input,#addDepartmentForm select{
+     #addFacultyForm input,#addFacultyForm select{
         margin-left:10%
      }
-     #addInstructorForm input,#addInstructorForm select{
+     #addLectureForm input,#addLectureForm select{
         margin-left:10%;
      }
      #addClassForm input,#addClassForm select{

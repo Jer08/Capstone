@@ -7,35 +7,35 @@ function user()
     return null;
 }
 
-function getDepartmentNames()
+function getFacultyNames()
 {
     global $pdo;
-    $sql = "SELECT * FROM tbldepartment";
+    $sql = "SELECT * FROM tblfaculty";
     $stmt = $pdo->query($sql);
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $departmentNames = array();
+    $facultyNames = array();
     if ($result) {
         foreach ($result as $row) {
-            $departmentNames[] = $row;
+            $facultyNames[] = $row;
         }
     }
 
-    return $departmentNames;
+    return $facultyNames;
 }
-function getInstructorNames()
+function getLectureNames()
 {
     global $pdo;
-    $sql = "SELECT Id, firstName, lastName FROM tblinstructor";
+    $sql = "SELECT Id, firstName, lastName FROM tbllecture";
     $stmt = $pdo->query($sql);
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $instructorNames = array();
+    $lectureNames = array();
     if ($result) {
         foreach ($result as $row) {
-            $instructorNames[] = $row;
+            $lectureNames[] = $row;
         }
     }
 
-    return $instructorNames;
+    return $lectureNames;
 }
 function getCourseNames()
 {
@@ -67,19 +67,19 @@ function getVenueNames()
 
     return $venueNames;
 }
-function getSubjectNames()
+function getUnitNames()
 {
-    $sql = "SELECT subjectCode,name FROM tblsubject";
+    $sql = "SELECT unitCode,name FROM tblunit";
     $result = fetch($sql);
 
-    $subjectNames = array();
+    $unitNames = array();
     if ($result) {
         foreach ($result as $row) {
-            $subjectNames[] = $row;
+            $unitNames[] = $row;
         }
     }
 
-    return $subjectNames;
+    return $unitNames;
 }
 
 function showMessage(): void
@@ -117,11 +117,11 @@ function fetch($sql)
 }
 
 
-function fetchStudentRecordsFromDatabase($courseCode, $subjectCode)
+function fetchStudentRecordsFromDatabase($courseCode, $unitCode)
 {
     $studentRows = array();
 
-    $query = "SELECT * FROM tblattendance WHERE course = '$courseCode' AND subject = '$subjectCode'";
+    $query = "SELECT * FROM tblattendance WHERE course = '$courseCode' AND unit = '$unitCode'";
     $result = fetch($query);
 
     if ($result) {

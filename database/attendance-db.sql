@@ -50,17 +50,23 @@ INSERT INTO `tbladmin` (`Id`, `firstName`, `lastName`, `emailAddress`, `password
 
 CREATE TABLE `tblattendance` (
   `attendanceID` int(50) NOT NULL,
-  `studentIDNumber` varchar(100) NOT NULL,
+  `studentRegistrationNumber` varchar(100) NOT NULL,
   `course` varchar(100) NOT NULL,
   `attendanceStatus` varchar(100) NOT NULL,
   `dateMarked` date NOT NULL,
-  `subject` varchar(100) NOT NULL
+  `unit` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tblcourse`
+--
 
 CREATE TABLE `tblcourse` (
   `Id` int(50) NOT NULL,
   `name` varchar(50) NOT NULL,
-  `departmentID` int(50) NOT NULL,
+  `facultyID` int(50) NOT NULL,
   `dateCreated` date NOT NULL,
   `courseCode` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -69,41 +75,51 @@ CREATE TABLE `tblcourse` (
 -- Dumping data for table `tblcourse`
 --
 
-INSERT INTO `tblcourse` (`Id`, `name`, `departmentID`, `dateCreated`, `courseCode`) VALUES
+INSERT INTO `tblcourse` (`Id`, `name`, `facultyID`, `dateCreated`, `courseCode`) VALUES
 (10, 'Computer Technology', 8, '2024-04-07', 'BCT');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tbldepartment`
+-- Table structure for table `tblfaculty`
 --
 
-CREATE TABLE `tbldepartment` (
+CREATE TABLE `tblfaculty` (
   `Id` int(10) NOT NULL,
-  `departmentName` varchar(255) NOT NULL,
-  `departmentCode` varchar(50) NOT NULL,
+  `facultyName` varchar(255) NOT NULL,
+  `facultyCode` varchar(50) NOT NULL,
   `dateRegistered` date NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
-INSERT INTO `tbldepartment` (`Id`, `departmentName`, `departmentCode`, `dateRegistered`) VALUES
+--
+-- Dumping data for table `tblfaculty`
+--
+
+INSERT INTO `tblfaculty` (`Id`, `facultyName`, `facultyCode`, `dateRegistered`) VALUES
 (8, 'Computing and Information Technology', 'CIT', '2024-04-07');
 
-CREATE TABLE `tblinstructor` (
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbllecture`
+--
+
+CREATE TABLE `tbllecture` (
   `Id` int(10) NOT NULL,
   `firstName` varchar(255) NOT NULL,
   `lastName` varchar(255) NOT NULL,
   `emailAddress` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `phoneNo` varchar(50) NOT NULL,
-  `departmentCode` varchar(50) NOT NULL,
+  `facultyCode` varchar(50) NOT NULL,
   `dateCreated` varchar(50) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data for table `tblinstructor`
+-- Dumping data for table `tbllecture`
 --
 
-INSERT INTO `tblinstructor` (`Id`, `firstName`, `lastName`, `emailAddress`, `password`, `phoneNo`, `departmentCode`, `dateCreated`) VALUES
+INSERT INTO `tbllecture` (`Id`, `firstName`, `lastName`, `emailAddress`, `password`, `phoneNo`, `facultyCode`, `dateCreated`) VALUES
 (15, 'mark', 'lila', 'mark@gmail.com', '$2y$10$Y76aaN2YkQgZzuKXuHMffuytubLazhV86E0cmDRv960prgQJi/TDi', '07123456789', 'CIT', '2024-04-07');
 
 -- --------------------------------------------------------
@@ -116,9 +132,9 @@ CREATE TABLE `tblstudents` (
   `Id` int(10) NOT NULL,
   `firstName` varchar(255) NOT NULL,
   `lastName` varchar(255) NOT NULL,
-  `idNumber` varchar(255) NOT NULL,
+  `registrationNumber` varchar(255) NOT NULL,
   `email` varchar(50) NOT NULL,
-  `department` varchar(10) NOT NULL,
+  `faculty` varchar(10) NOT NULL,
   `courseCode` varchar(20) NOT NULL,
   `studentImage` varchar(300) NOT NULL,
   `dateRegistered` varchar(50) NOT NULL
@@ -127,22 +143,22 @@ CREATE TABLE `tblstudents` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tblsubject`
+-- Table structure for table `tblunit`
 --
 
-CREATE TABLE `tblsubject` (
+CREATE TABLE `tblunit` (
   `Id` int(10) NOT NULL,
   `name` varchar(50) NOT NULL,
-  `subjectCode` varchar(50) NOT NULL,
+  `unitCode` varchar(50) NOT NULL,
   `courseID` varchar(50) NOT NULL,
   `dateCreated` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `tblsubject`
+-- Dumping data for table `tblunit`
 --
 
-INSERT INTO `tblsubject` (`Id`, `name`, `subjectCode`, `courseID`, `dateCreated`) VALUES
+INSERT INTO `tblunit` (`Id`, `name`, `unitCode`, `courseID`, `dateCreated`) VALUES
 (3, 'Project Implementation', 'BCT 2411', '8', '2024-04-07');
 
 -- --------------------------------------------------------
@@ -154,7 +170,7 @@ INSERT INTO `tblsubject` (`Id`, `name`, `subjectCode`, `courseID`, `dateCreated`
 CREATE TABLE `tblvenue` (
   `Id` int(10) NOT NULL,
   `className` varchar(50) NOT NULL,
-  `departmentCode` varchar(50) NOT NULL,
+  `facultyCode` varchar(50) NOT NULL,
   `currentStatus` varchar(50) NOT NULL,
   `capacity` int(10) NOT NULL,
   `classification` varchar(50) NOT NULL,
@@ -165,7 +181,7 @@ CREATE TABLE `tblvenue` (
 -- Dumping data for table `tblvenue`
 --
 
-INSERT INTO `tblvenue` (`Id`, `className`, `departmentCode`, `currentStatus`, `capacity`, `classification`, `dateCreated`) VALUES
+INSERT INTO `tblvenue` (`Id`, `className`, `facultyCode`, `currentStatus`, `capacity`, `classification`, `dateCreated`) VALUES
 (15, 'b34', 'CIT', 'availlable', 45, 'laboratory', '2024-11-26');
 
 --
@@ -191,15 +207,15 @@ ALTER TABLE `tblcourse`
   ADD PRIMARY KEY (`Id`);
 
 --
--- Indexes for table `tbldepartment`
+-- Indexes for table `tblfaculty`
 --
-ALTER TABLE `tbldepartment`
+ALTER TABLE `tblfaculty`
   ADD PRIMARY KEY (`Id`);
 
 --
--- Indexes for table `tblinstructor`
+-- Indexes for table `tbllecture`
 --
-ALTER TABLE `tblinstructor`
+ALTER TABLE `tbllecture`
   ADD PRIMARY KEY (`Id`);
 
 --
@@ -209,9 +225,9 @@ ALTER TABLE `tblstudents`
   ADD PRIMARY KEY (`Id`);
 
 --
--- Indexes for table `tblsubject`
+-- Indexes for table `tblunit`
 --
-ALTER TABLE `tblsubject`
+ALTER TABLE `tblunit`
   ADD PRIMARY KEY (`Id`);
 
 --
@@ -243,15 +259,15 @@ ALTER TABLE `tblcourse`
   MODIFY `Id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
--- AUTO_INCREMENT for table `tbldepartment`
+-- AUTO_INCREMENT for table `tblfaculty`
 --
-ALTER TABLE `tbldepartment`
+ALTER TABLE `tblfaculty`
   MODIFY `Id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
--- AUTO_INCREMENT for table `tblinstructor`
+-- AUTO_INCREMENT for table `tbllecture`
 --
-ALTER TABLE `tblinstructor`
+ALTER TABLE `tbllecture`
   MODIFY `Id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
@@ -261,9 +277,9 @@ ALTER TABLE `tblstudents`
   MODIFY `Id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=129;
 
 --
--- AUTO_INCREMENT for table `tblsubject`
+-- AUTO_INCREMENT for table `tblunit`
 --
-ALTER TABLE `tblsubject`
+ALTER TABLE `tblunit`
   MODIFY `Id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --

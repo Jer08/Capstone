@@ -106,7 +106,7 @@ body {
     border-radius: 50%;
     overflow: hidden;
 }
-.instructor-options{
+.lecture-options{
     display:flex;
     justify-content:space-around;
     padding-top:1.5rem;

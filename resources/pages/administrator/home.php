@@ -78,12 +78,12 @@
                                 <th>Email Address</th>
                                 <th>Phone No</th>
                                 <th>Date Registered</th>
-                                <th>Settings</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
+
                         <tbody>
                             <tr>
-
                             <?php
                             $sql = "SELECT * FROM tblinstructor";
                             $stmt = $pdo->query($sql);
@@ -102,12 +102,11 @@
                                 echo "<tr><td colspan='6'>No records found</td></tr>";
                             }
                             ?>
-
-
                         </tbody>
                     </table>
                 </div>
             </div>
+
             <div class="table-container">
                 <a href="manage-students" style="text-decoration:none;">
                     <div class="title">
@@ -123,9 +122,10 @@
                                 <th>Name</th>
                                 <th>Course</th>
                                 <th>Email</th>
-                                <th>Settings</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
+
                         <tbody>
                             <?php
                             $sql = "SELECT * FROM tblstudents";
@@ -144,18 +144,16 @@
                             } else {
                                 echo "<tr><td colspan='6'>No records found</td></tr>";
                             }
-
                             ?>
-
                         </tbody>
                     </table>
                 </div>
-
             </div>
+
             <div class="table-container">
                 <a href="create-venue" style="text-decoration:none;">
                     <div class="title">
-                        <h2 class="section--title">Instructor Rooms</h2>
+                        <h2 class="section--title">Rooms</h2>
                         <button class="add"><i class="ri-add-line"></i>Add room</button>
                     </div>
                 </a>
@@ -164,25 +162,23 @@
                         <thead>
                             <tr>
                                 <th>Class Name</th>
-                                <th>Current Status</th>
                                 <th>Capacity</th>
                                 <th>Classification</th>
-                                <th>Settings</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-                            $sql = "SELECT * FROM tblvenue";
+                            $sql = "SELECT * FROM tblroom";
                             $stmt = $pdo->query($sql);
                             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             if ($result) {
                                 foreach ($result as $row) {
-                                    echo "<tr id='rowvenue{$row["Id"]}'>";
+                                    echo "<tr id='rowroom{$row["Id"]}'>";
                                     echo "<td>" . $row["className"] . "</td>";
-                                    echo "<td>" . $row["currentStatus"] . "</td>";
                                     echo "<td>" . $row["capacity"] . "</td>";
                                     echo "<td>" . $row["classification"] . "</td>";
-                                    echo "<td><span><i class='ri-delete-bin-line delete' data-id='{$row["Id"]}' data-name='venue'></i></span></td>";
+                                    echo "<td><span><i class='ri-delete-bin-line delete' data-id='{$row["Id"]}' data-name='room'></i></span></td>";
                                     echo "</tr>";
                                 }
                             } else {
@@ -192,8 +188,8 @@
                         </tbody>
                     </table>
                 </div>
-
             </div>
+
             <div class="table-container">
                 <a href="manage-course" style="text-decoration:none;">
                     <div class="title">
@@ -212,6 +208,7 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
+                        
                         <tbody>
                             <?php
                             $sql = "SELECT 
