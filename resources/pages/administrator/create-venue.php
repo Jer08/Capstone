@@ -2,22 +2,16 @@
 
 
 if (isset($_POST["addVenue"])) {
-    // Sanitize and validate inputs
     $className = htmlspecialchars(trim($_POST['className']));
-    $departmentCode = htmlspecialchars(trim($_POST['department']));
-    $currentStatus = htmlspecialchars(trim($_POST['currentStatus']));
     $capacity = filter_var($_POST['capacity'], FILTER_VALIDATE_INT);
     $classification = htmlspecialchars(trim($_POST['classification']));
 
-    // Check for required fields
-    if (!$className || !$departmentCode || !$currentStatus || !$capacity || !$classification) {
+    if (!$className || !$capacity || !$classification) {
         $_SESSION['message'] = "All fields are required and must be valid.";
     } else {
         $dateRegistered = date("Y-m-d");
 
-        // Prepare database operations using PDO
         try {
-            // Check if venue already exists
             $stmt = $pdo->prepare("SELECT * FROM tblvenue WHERE className = :className");
             $stmt->bindParam(':className', $className);
             $stmt->execute();
@@ -25,14 +19,11 @@ if (isset($_POST["addVenue"])) {
             if ($stmt->rowCount() > 0) {
                 $_SESSION['message'] = "Venue Already Exists";
             } else {
-                // Insert the new venue
                 $stmt = $pdo->prepare(
-                    "INSERT INTO tblvenue (className, departmentCode, currentStatus, capacity, classification, dateCreated)
-                    VALUES (:className, :departmentCode, :currentStatus, :capacity, :classification, :dateCreated)"
+                    "INSERT INTO tblvenue (className, capacity, classification, dateCreated)
+                    VALUES (:className, :capacity, :classification, :dateCreated)"
                 );
                 $stmt->bindParam(':className', $className);
-                $stmt->bindParam(':departmentCode', $departmentCode);
-                $stmt->bindParam(':currentStatus', $currentStatus);
                 $stmt->bindParam(':capacity', $capacity, PDO::PARAM_INT);
                 $stmt->bindParam(':classification', $classification);
                 $stmt->bindParam(':dateCreated', $dateRegistered);
@@ -70,65 +61,6 @@ if (isset($_POST["addVenue"])) {
         <?php include 'includes/sidebar.php'; ?>
         <div class="main--content">
 
-            <div id="overlay"></div>
-
-            <div class="rooms">
-                <div class="title">
-                    <h2 class="section--title">Rooms</h2>
-                    <div class="rooms--right--btns">
-                        <select name="date" id="date" class="dropdown room--filter">
-                            <option>Filter</option>
-                            <option value="free">Free</option>
-                            <option value="scheduled">Scheduled</option>
-                        </select>
-                        <button id="addClass1" class="add show-form"><i class="ri-add-line"></i>Add instructor room</button>
-                    </div>
-                </div>
-                <div class="rooms--cards">
-                    <a href="#" class="room--card">
-                        <div class="img--box--cover">
-                            <div class="img--box">
-                                <img src="resources/images/office image.jpeg" alt="">
-                            </div>
-                        </div>
-                        <p class="free">Office</p>
-                    </a>
-                    <a href="#" class="room--card">
-                        <div class="img--box--cover">
-                            <div class="img--box">
-                                <img src="resources/images/class.jpeg" alt="">
-                            </div>
-                        </div>
-                        <p class="free">Class</p>
-                    </a>
-
-                    <a href="#" class="room--card">
-                        <div class="img--box--cover">
-                            <div class="img--box">
-                                <img src="resources/images/instructor hall.jpeg" alt="">
-                            </div>
-                        </div>
-                        <p class="free">Instructor Hall</p>
-                    </a>
-
-                    <a href="#" class="room--card">
-                        <div class="img--box--cover">
-                            <div class="img--box">
-                                <img src="resources/images/computer lab.jpeg" alt="">
-                            </div>
-                        </div>
-                        <p class="free">Computer Lab</p>
-                    </a>
-                    <a href="#" class="room--card">
-                        <div class="img--box--cover">
-                            <div class="img--box">
-                                <img src="resources/images/laboratory.jpeg" alt="">
-                            </div>
-                        </div>
-                        <p class="free">Science Lab</p>
-                    </a>
-                </div>
-            </div>
             <?php showMessage() ?>
             <div class="table-container">
                 <div class="title" id="addClass2">
@@ -141,8 +73,6 @@ if (isset($_POST["addVenue"])) {
                         <thead>
                             <tr>
                                 <th>Class Name</th>
-                                <th>Department</th>
-                                <th>Current Status</th>
                                 <th>Capacity</th>
                                 <th>Classification</th>
                                 <th>Settings</th>
@@ -157,8 +87,6 @@ if (isset($_POST["addVenue"])) {
                                 foreach ($result as $row)
                                     echo "<tr id='rowvenue{$row["Id"]}'>";
                                 echo "<td>" . $row["className"] . "</td>";
-                                echo "<td>" . $row["departmentCode"] . "</td>";
-                                echo "<td>" . $row["currentStatus"] . "</td>";
                                 echo "<td>" . $row["capacity"] . "</td>";
                                 echo "<td>" . $row["classification"] . "</td>";
                                 echo "<td><span><i class='ri-delete-bin-line delete' data-id='{$row["Id"]}' data-name='venue'></i></span></td>";
@@ -185,28 +113,19 @@ if (isset($_POST["addVenue"])) {
                         </div>
                     </div>
                     <input type="text" name="className" placeholder="Class Name" required>
-                    <select name="currentStatus" id="">
-                        <option value="">--Current Status--</option>
-                        <option value="availlable">Available</option>
-                        <option value="scheduled">Scheduled</option>
-                    </select>
                     <input type="text" name="capacity" placeholder="Capacity" required>
                     <select required name="classification">
-                        <option value="" selected> --Select Class Type--</option>
+                        <option value="" selected> --Select Room--</option>
                         <option value="laboratory">Laboratory</option>
                         <option value="computerLab">Computer Lab</option>
                         <option value="instructorHall">Instructor Hall</option>
                         <option value="class">Class</option>
                         <option value="office">Office</option>
                     </select>
-                    <select required name="department">
-                        <option value="" selected>Select Department</option>
-                        <?php
-                        $departmentNames = getDepartmentNames();
-                        foreach ($departmentNames as $department) {
-                            echo '<option value="' . $department["departmentCode"] . '">' . $department["departmentName"] . '</option>';
-                        }
-                        ?>
+                    <select required name="Course">
+                        <option value="" selected>Select Course</option>
+                        <option value="" selected>Bachelor of Science in Information Systems</option>
+                        <option value="" selected>Bachelor of Science in Acconting Information Systems</option>
                     </select>
                     <input type="submit" class="submit" value="Save Venue" name="addVenue">
                 </form>
@@ -242,3 +161,5 @@ if (isset($_POST["addVenue"])) {
 </body>
 
 </html>
+
+

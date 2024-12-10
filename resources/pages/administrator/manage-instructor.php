@@ -6,11 +6,10 @@ if (isset($_POST["addInstructor"])) {
     $lastName = htmlspecialchars(trim($_POST["lastName"]));
     $email = filter_var(trim($_POST["email"]), FILTER_VALIDATE_EMAIL);
     $phoneNumber = htmlspecialchars(trim($_POST["phoneNumber"]));
-    $department = htmlspecialchars(trim($_POST["department"]));
     $dateRegistered = date("Y-m-d");
     $password = password_hash("password", PASSWORD_DEFAULT); // Secure password hashing
 
-    if ($email && $firstName && $lastName && $phoneNumber && $department) {
+    if ($email && $firstName && $lastName && $phoneNumber) {
         try {
             // Check if instructor already exists
             $query = $pdo->prepare("SELECT * FROM tblinstructor WHERE emailAddress = :email");
@@ -22,14 +21,13 @@ if (isset($_POST["addInstructor"])) {
             } else {
                 // Insert new instructor
                 $query = $pdo->prepare("INSERT INTO tblinstructor 
-                    (firstName, lastName, emailAddress, password, phoneNo, departmentCode, dateCreated) 
-                    VALUES (:firstName, :lastName, :email, :password, :phoneNumber, :department, :dateCreated)");
+                    (firstName, lastName, emailAddress, password, phoneNo, dateCreated) 
+                    VALUES (:firstName, :lastName, :email, :password, :phoneNumber, :dateCreated)");
                 $query->bindParam(':firstName', $firstName);
                 $query->bindParam(':lastName', $lastName);
                 $query->bindParam(':email', $email);
                 $query->bindParam(':password', $password);
                 $query->bindParam(':phoneNumber', $phoneNumber);
-                $query->bindParam(':department', $department);
                 $query->bindParam(':dateCreated', $dateRegistered);
 
                 $query->execute();
@@ -84,7 +82,6 @@ if (isset($_POST["addInstructor"])) {
                                 <th>Name</th>
                                 <th>Email Address</th>
                                 <th>Phone No</th>
-                                <th>Department</th>
                                 <th>Date Registered</th>
                                 <th>Settings</th>
                             </tr>
@@ -100,7 +97,6 @@ if (isset($_POST["addInstructor"])) {
                                         echo "<td>" . $row["firstName"] . "</td>";
                                         echo "<td>" . $row["emailAddress"] . "</td>";
                                         echo "<td>" . $row["phoneNo"] . "</td>";
-                                        echo "<td>" . $row["departmentCode"] . "</td>";
                                         echo "<td>" . $row["dateCreated"] . "</td>";
                                         echo "<td><span><i class='ri-delete-bin-line delete' data-id='{$row["Id"]}' data-name='instructor'></i></span></td>";
                                         echo "</tr>";
@@ -129,17 +125,7 @@ if (isset($_POST["addInstructor"])) {
                     <input type="text" name="lastName" placeholder="Last Name" required>
                     <input type="email" name="email" placeholder="Email Address" required>
                     <input type="text" name="phoneNumber" placeholder="Phone Number" required>
-                    <input type="password" name="password" placeholder="**********" required>
-
-                    <select required name="department">
-                        <option value="" selected>Select Department</option>
-                        <?php
-                        $departmentNames = getDepartmentNames();
-                        foreach ($departmentNames as $department) {
-                            echo '<option value="' . $department["departmentCode"] . '">' . $department["departmentName"] . '</option>';
-                        }
-                        ?>
-                    </select>
+                    <input type="password" name="password" placeholder="Password" required>
                     <input type="submit" class="submit" value="Save Instructor" name="addInstructor">
                 </form>
             </div>

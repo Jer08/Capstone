@@ -7,12 +7,11 @@ if (isset($_POST['addStudent'])) {
     $email = $_POST['email'];
     $idNumber = $_POST['idNumber'];
     $courseCode = $_POST['course'];
-    $department = $_POST['department'];
     $dateRegistered = date("Y-m-d");
 
-    $imageFileNames = []; // Array to hold image file names
+    $imageFileNames = []; 
 
-    // Process and save images
+   
     $folderPath = "resources/labels/{$idNumber}/";
     if (!file_exists($folderPath)) {
         mkdir($folderPath, 0777, true);
@@ -29,7 +28,6 @@ if (isset($_POST['addStudent'])) {
         }
     }
 
-    // Convert image file names to JSON
     $imagesJson = json_encode($imageFileNames);
 
 
@@ -40,12 +38,11 @@ if (isset($_POST['addStudent'])) {
     if ($count > 0) {
         $_SESSION['message'] = "Student with the given ID No: $idNumber already exists!";
     } else {
-        // Insert new student with images stored as JSON
         $insertQuery = $pdo->prepare("
         INSERT INTO tblstudents 
-        (firstName, lastName, email, idNumber, department, courseCode, studentImage, dateRegistered) 
+        (firstName, lastName, email, idNumber, courseCode, studentImage, dateRegistered) 
         VALUES 
-        (:firstName, :lastName, :email, :idNumber, :department, :courseCode, :studentImage, :dateRegistered)
+        (:firstName, :lastName, :email, :idNumber, :courseCode, :studentImage, :dateRegistered)
     ");
 
         $insertQuery->execute([
@@ -53,9 +50,8 @@ if (isset($_POST['addStudent'])) {
             ':lastName' => $lastName,
             ':email' => $email,
             ':idNumber' => $idNumber,
-            ':department' => $department,
             ':courseCode' => $courseCode,
-            ':studentImage' => $imagesJson, // Store JSON array of image file names
+            ':studentImage' => $imagesJson, 
             ':dateRegistered' => $dateRegistered
         ]);
 
@@ -101,7 +97,6 @@ if (isset($_POST['addStudent'])) {
                             <tr>
                                 <th>ID No</th>
                                 <th>Name</th>
-                                <th>Department</th>
                                 <th>Course</th>
                                 <th>Email</th>
                                 <th>Settings</th>
@@ -116,7 +111,6 @@ if (isset($_POST['addStudent'])) {
                                     echo "<tr id='rowstudents{$row["Id"]}'>";
                                     echo "<td>" . $row["idNumber"] . "</td>";
                                     echo "<td>" . $row["firstName"] . "</td>";
-                                    echo "<td>" . $row["department"] . "</td>";
                                     echo "<td>" . $row["courseCode"] . "</td>";
                                     echo "<td>" . $row["email"] . "</td>";
                                     echo "<td><span><i class='ri-delete-bin-line delete' data-id='{$row["Id"]}' data-name='students'></i></span></td>";
@@ -151,15 +145,7 @@ if (isset($_POST['addStudent'])) {
                             <input type="email" name="email" placeholder="Email Address">
                             <input type="text" required id="idNumber" name="idNumber" placeholder="ID Number"> <br>
                             <p id="error" style="color: red; display: none;">Invalid characters in ID number.</p> 
-                            <select required name="department">
-                                <option value="" selected>Select Department</option>
-                                <?php
-                                $departmentNames = getDepartmentNames();
-                                foreach ($departmentNames as $department) {
-                                    echo '<option value="' . $department["departmentCode"] . '">' . $department["departmentName"] . '</option>';
-                                }
-                                ?>
-                            </select> <br />
+                            <br/>
 
                             <select required name="course">
                                 <option value="" selected>Select Course</option>
@@ -180,21 +166,12 @@ if (isset($_POST['addStudent'])) {
                                 <img src="resources/images/default.png" alt="Default Image">
                             </div>
                             <div id="multiple-images">
-
-
-
                             </div>
-
-
                         </div>
                     </div>
-
                     <input type="submit" class="btn-submit" value="Save Student" name="addStudent" />
-
-
                 </form>
             </div>
-
     </section>
 
 
@@ -223,5 +200,4 @@ if (isset($_POST['addStudent'])) {
         });
     </script>
 </body>
-
 </html>

@@ -40,7 +40,6 @@
 
                     </div>
                     <div class="card card-1">
-
                         <div class="card--data">
                             <div class="card--content">
                                 <h5 class="card--title">Subjects</h5>
@@ -48,7 +47,6 @@
                             </div>
                             <i class="ri-file-text-line card--icon--lg"></i>
                         </div>
-
                     </div>
 
                     <div class="card card-1">
@@ -79,35 +77,32 @@
                                 <th>Name</th>
                                 <th>Email Address</th>
                                 <th>Phone No</th>
-                                <th>Department</th>
                                 <th>Date Registered</th>
                                 <th>Settings</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <?php
-                                $sql = "SELECT l.*, f.departmentName
-                         FROM tblinstructor l
-                         LEFT JOIN tbldepartment f ON l.departmentCode = f.departmentCode";
 
-                                $stmt = $pdo->query($sql);
-                                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                                if ($result) {
-                                    foreach ($result as $row) {
-                                        echo "<tr id='rowinstructor{$row["Id"]}'>";
-                                        echo "<td>" . $row["firstName"] . "</td>";
-                                        echo "<td>" . $row["emailAddress"] . "</td>";
-                                        echo "<td>" . $row["phoneNo"] . "</td>";
-                                        echo "<td>" . $row["departmentName"] . "</td>";
-                                        echo "<td>" . $row["dateCreated"] . "</td>";
-                                        echo "<td><span><i class='ri-delete-bin-line delete' data-id='{$row["Id"]}' data-name='instructor'></i></span></td>";
-                                        echo "</tr>";
-                                    }
-                                } else {
-                                    echo "<tr><td colspan='6'>No records found</td></tr>";
+                            <?php
+                            $sql = "SELECT * FROM tblinstructor";
+                            $stmt = $pdo->query($sql);
+                            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                            if ($result) {
+                                foreach ($result as $row) {
+                                    echo "<tr id='rowinstructor{$row["Id"]}'>";
+                                    echo "<td>" . $row["firstName"] . "</td>";
+                                    echo "<td>" . $row["emailAddress"] . "</td>";
+                                    echo "<td>" . $row["phoneNo"] . "</td>";
+                                    echo "<td>" . $row["dateCreated"] . "</td>";
+                                    echo "<td><span><i class='ri-delete-bin-line delete' data-id='{$row["Id"]}' data-name='instructor'></i></span></td>";
+                                    echo "</tr>";
                                 }
-                                ?>
+                            } else {
+                                echo "<tr><td colspan='6'>No records found</td></tr>";
+                            }
+                            ?>
+
 
                         </tbody>
                     </table>
@@ -126,7 +121,6 @@
                             <tr>
                                 <th>ID No</th>
                                 <th>Name</th>
-                                <th>Department</th>
                                 <th>Course</th>
                                 <th>Email</th>
                                 <th>Settings</th>
@@ -142,7 +136,6 @@
                                     echo "<tr id='rowstudents{$row["Id"]}'>";
                                     echo "<td>" . $row["idNumber"] . "</td>";
                                     echo "<td>" . $row["firstName"] . "</td>";
-                                    echo "<td>" . $row["department"] . "</td>";
                                     echo "<td>" . $row["courseCode"] . "</td>";
                                     echo "<td>" . $row["email"] . "</td>";
                                     echo "<td><span><i class='ri-delete-bin-line delete' data-id='{$row["Id"]}' data-name='students'></i></span></td>";
@@ -171,7 +164,6 @@
                         <thead>
                             <tr>
                                 <th>Class Name</th>
-                                <th>Department</th>
                                 <th>Current Status</th>
                                 <th>Capacity</th>
                                 <th>Classification</th>
@@ -187,7 +179,6 @@
                                 foreach ($result as $row) {
                                     echo "<tr id='rowvenue{$row["Id"]}'>";
                                     echo "<td>" . $row["className"] . "</td>";
-                                    echo "<td>" . $row["departmentCode"] . "</td>";
                                     echo "<td>" . $row["currentStatus"] . "</td>";
                                     echo "<td>" . $row["capacity"] . "</td>";
                                     echo "<td>" . $row["classification"] . "</td>";
@@ -215,7 +206,6 @@
                         <thead>
                             <tr>
                                 <th>Name</th>
-                                <th>Department</th>
                                 <th>Total Subjects</th>
                                 <th>Total Students</th>
                                 <th>Date Created</th>
@@ -226,15 +216,12 @@
                             <?php
                             $sql = "SELECT 
                         c.name AS course_name,c.Id AS Id,
-                        c.departmentID AS department,
-                        f.departmentName AS department_name,
                         COUNT(u.ID) AS total_subjects,
                         COUNT(DISTINCT s.Id) AS total_students,
                         c.dateCreated AS date_created
                         FROM tblcourse c
                         LEFT JOIN tblsubject u ON c.ID = u.courseID
                         LEFT JOIN tblstudents s ON c.courseCode = s.courseCode
-                        LEFT JOIN tbldepartment f on c.departmentID=f.Id
                         GROUP BY c.ID";
                             $stmt = $pdo->query($sql);
                             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -242,7 +229,6 @@
                                 foreach ($result as $row) {
                                     echo "<tr id='rowcourse{$row["Id"]}'>";
                                     echo "<td>" . $row["course_name"] . "</td>";
-                                    echo "<td>" . $row["department_name"] . "</td>";
                                     echo "<td>" . $row["total_subjects"] . "</td>";
                                     echo "<td>" . $row["total_students"] . "</td>";
                                     echo "<td>" . $row["date_created"] . "</td>";

@@ -57,12 +57,6 @@ CREATE TABLE `tblattendance` (
   `subject` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `tblcourse`
---
-
 CREATE TABLE `tblcourse` (
   `Id` int(50) NOT NULL,
   `name` varchar(50) NOT NULL,
@@ -91,18 +85,8 @@ CREATE TABLE `tbldepartment` (
   `dateRegistered` date NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
---
--- Dumping data for table `tbldepartment`
---
-
 INSERT INTO `tbldepartment` (`Id`, `departmentName`, `departmentCode`, `dateRegistered`) VALUES
 (8, 'Computing and Information Technology', 'CIT', '2024-04-07');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `tblinstructor`
---
 
 CREATE TABLE `tblinstructor` (
   `Id` int(10) NOT NULL,
